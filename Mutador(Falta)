@@ -1,0 +1,51 @@
+class Mutador:
+    atributo1=""
+    atributo2=""
+
+    def __init__(self,base_nitrogenada):
+        self.base_nitrogenada= base_nitrogenada
+    def crear_mutante():
+        pass
+
+class Radiacion(Mutador):
+    atributo1=""
+    
+
+    def __init__(self,tipo_radiacion:str,base_nitrogenada):
+        super().__init__(base_nitrogenada)
+        self.tipo_radiacion= tipo_radiacion
+
+    def crear_mutante(self, base_nitrogenada, posicion_inicial:list, orientacion_de_la_mutacion:str,matrizADN):
+        
+        self.base_nitrogenada = base_nitrogenada.strip().upper()
+        self.orientacion_de_la_mutacion=orientacion_de_la_mutacion.strip().upper()
+        self.fila_inicial, self.columna_inicial = posicion_inicial #De una lista, desglosa en 2 variables
+        print(f"Posición inicial: {self.fila_inicial}, {self.columna_inicial}")
+        print(f"Orientación: {self.orientacion_de_la_mutacion}")
+        while True:
+            try:
+                #Comprobar si la posicion esta fuera del rango
+                if self.fila_inicial >= len(matrizADN) or self.columna_inicial >= len(matrizADN[0]):
+                    raise IndexError("La posicion elegida se encuentra fuera de la cadena de ADN")
+               #Verificar que tenga 2 elementos
+                elif len(posicion_inicial) != 2:
+                    raise ValueError("Para mutar se debe tener solo 2 numeros")
+                #Verificar que sea H o V
+                elif self.orientacion_de_la_mutacion not in ["H","V"]:
+                    raise IndexError("Direccion no valida")
+               # Verificar la base nitrogenada
+                elif self.base_nitrogenada not in ["A","C","G","T"]:
+                    raise ValueError("Base nitrogenada no valida")
+                
+                # Cuando la mutacion sea horizontal
+                if (self.orientacion_de_la_mutacion == "H") and (self.columna_inicial in [0,1,2]):
+                    
+                   for i in range(self.columna_inicial,self.columna_inicial+4):
+                        secuencia_ADN = list(matrizADN[self.fila_inicial])
+                        secuencia_ADN[i] = base_nitrogenada
+                        matrizADN[self.fila_inicial] = ''.join(secuencia_ADN)
+                elif (self.orientacion_de_la_mutacion == "H") and (self.columna_inicial in [3,4,5]):
+                    for i in range(self.columna_inicial,self.columna_inicial-4,-1): #iria del n° columna, de manera inversa, como el ultimo valor no lo cuenta llegaria hasta -1 (sin contarlo)
+                        secuencia_ADN = list(matrizADN[self.fila_inicial])
+                        secuencia_ADN[i] = base_nitrogenada
+                        matrizADN[self.fila_inicial] = ''.join(secuencia_ADN)
