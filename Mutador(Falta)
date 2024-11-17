@@ -49,3 +49,19 @@ class Radiacion(Mutador):
                         secuencia_ADN = list(matrizADN[self.fila_inicial])
                         secuencia_ADN[i] = base_nitrogenada
                         matrizADN[self.fila_inicial] = ''.join(secuencia_ADN)
+
+
+                # Cuando la mutacion sea vertical
+                if (self.orientacion_de_la_mutacion == "V") and (self.fila_inicial in [0,1,2]):
+
+                    for i in range(self.fila_inicial, self.fila_inicial+4):
+                        secuencia_ADN = list (matrizADN[i])
+                        secuencia_ADN[self.columna_inicial] = base_nitrogenada
+                        matrizADN[i] = ''.join(secuencia_ADN)
+
+                elif (self.orientacion_de_la_mutacion == "V") and (self.fila_inicial in [3,4,5]):
+
+                    for i in range(self.fila_inicial, self.fila_inicial -4 , -1):
+                        secuencia_ADN = list (matrizADN[i])
+                        secuencia_ADN[self.columna_inicial] = base_nitrogenada
+                        matrizADN[i] = ''.join(secuencia_ADN)
