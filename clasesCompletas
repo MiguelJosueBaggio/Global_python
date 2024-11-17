@@ -1,0 +1,222 @@
+import random
+class Detector:
+    metodo = "Polimorfismo de conformacion de cadena sencilla" 
+    siglas = "SSCP"
+
+    def __init__(self,nombre:str):
+        self.nombre = nombre
+        self.resultadoHorizontal = None
+        self.resultadoVertical = None 
+        self.resultadoDiagonal = None
+        self.mutado = False
+
+    def detector_mutantes(self,matrizADN:list)->bool:
+        resultadoHorizontal = self.detector_horizontal(matrizADN)
+        resultadoVertical = self.detector_vertical(matrizADN)
+        resultadoDiagonal = self.detector_diagonal(matrizADN)
+        self.mutado= resultadoHorizontal or resultadoVertical or resultadoDiagonal
+        return self.mutado
+    
+    def detector_horizontal(self, matrizADN)->bool:
+        for fila in matrizADN:
+            for i in range(len(fila) - 3): #La idea es de encontrar 4 caracteres juntos. por eso se analiza de 6 (longitud de la fila menos 3 para uqe no se pase)
+                secuencia = fila[i:i+4] #luego el set, cuanta los caracteres unicos, entonces si hay 4 iguales lo tomaria como 1
+                if len(set(secuencia)) == 1: #set, cuenta los caracteres unicos
+                    return True #En base al set hice los demas, solo que con mas for
+        return False
+    
+    def detector_vertical(self, matrizADN)->bool:
+        # Recorrer las posiciones de las columnas
+        for i in range(len(matrizADN[0])):  #  todas las palabras tienen la misma longitud
+        # Recorrer las filas de la columna, pero asegurándonos de no ir más allá de la longitud de la matriz
+            for j in range(len(matrizADN) - 3):  # Restamos 3 para asegurarnos de que podemos obtener 4 caracteres consecutivos
+            # Crear una secuencia de 4 caracteres consecutivos en la columna
+                secuencia = [matrizADN[j+k][i] for k in range(4)]
+            
+            # Verificar si la secuencia tiene todos los caracteres iguales
+                if len(set(secuencia)) == 1:  # Si la secuencia tiene solo un elemento distinto
+                    return True  # Se encontró una mutación, retornar True
+        return False
+    
+    def detector_diagonal(self, matrizADN)->bool:
+        filas = len(matrizADN)
+        columnas = len(matrizADN[0])
+        secuencia = 4  # Número de letras consecutivas que estamos buscando
+
+    # Verificar diagonales descendentes (de izquierda a derecha) (range no incluye el valor final)
+        for i in range(filas - secuencia + 1):  # Iteramos sobre las filas range(0,3)-0,1,2
+            for j in range(columnas - secuencia + 1):  # Iteramos sobre las columnas
+            # Comprobamos la secuencia diagonal descendente
+                letras = [matrizADN[i+k][j+k] for k in range(secuencia)]
+                if len(set(letras)) == 1:  # Si todas las letras son iguales
+                    return True
+
+    # Verificar diagonales ascendentes (de abajo hacia arriba)
+        for i in range(secuencia - 1, filas):  # Comenzamos desde la fila inferior range(3,6)-(3,4,5)
+            for j in range(columnas - secuencia + 1):  # Iteramos sobre las columnas
+            # Comprobamos la secuencia diagonal ascendente
+                letras = [matrizADN[i-k][j+k] for k in range(secuencia)]
+                if len(set(letras)) == 1:  # Si todas las letras son iguales
+                    return True
+
+        return False
+    
+
+
+class Mutador:
+    
+        ## CAMBIAR ATRIBUTO POR OTRA COSA
+    def __init__(self, base_nitrogenada: str, atributo1: str, atributo2: str):
+        self.base_nitrogenada = base_nitrogenada.strip().upper()
+        self.atributo1 = atributo1
+        self.atributo2 = atributo2
+    def crear_mutante():
+        pass
+
+class Radiacion(Mutador):
+   
+        ##CAMBIAR ATRIBUTO
+    def __init__(self,base_nitrogenada:str,atributo1:str,atributo2:str):
+        super().__init__(base_nitrogenada,atributo1,atributo2)
+
+    def crear_mutante(self, base_nitrogenada, posicion_inicial:list, orientacion_de_la_mutacion:str,matrizADN):
+        
+        self.base_nitrogenada = base_nitrogenada.strip().upper()
+        self.orientacion_de_la_mutacion=orientacion_de_la_mutacion.strip().upper()
+        self.fila_inicial, self.columna_inicial = posicion_inicial #De una lista, desglosa en 2 variables
+        print(f"Posición inicial: {self.fila_inicial}, {self.columna_inicial}")
+        print(f"Orientación: {self.orientacion_de_la_mutacion}")
+        while True:
+            try:
+                #Comprobar si la posicion esta fuera del rango
+                if self.fila_inicial >= len(matrizADN) or self.columna_inicial >= len(matrizADN[0]):
+                    raise IndexError("La posicion elegida se encuentra fuera de la cadena de ADN")
+               #Verificar que tenga 2 elementos
+                elif len(posicion_inicial) != 2:
+                    raise ValueError("Para mutar se debe tener solo 2 numeros")
+                #Verificar que sea H o V
+                elif self.orientacion_de_la_mutacion not in ["H","V"]:
+                    raise IndexError("Direccion no valida")
+               # Verificar la base nitrogenada
+                elif self.base_nitrogenada not in ["A","C","G","T"]:
+                    raise ValueError("Base nitrogenada no valida")
+                
+                self.mutacion_horizontal(self.base_nitrogenada,matrizADN)
+                self.mutacion_vertical(self.base_nitrogenada,matrizADN)
+
+                for fila in matrizADN:
+                    print(fila)
+                return matrizADN
+                
+            except (IndexError, ValueError) as e:
+                print("Intente nuevamente, error", e)
+                break
+    def mutacion_horizontal (self, base_nitrogenada,matrizADN):
+        if (self.orientacion_de_la_mutacion == "H") and (self.columna_inicial in [0,1,2]):       
+            for i in range(self.columna_inicial,self.columna_inicial+4):
+                secuencia_ADN = list(matrizADN[self.fila_inicial])
+                secuencia_ADN[i] = base_nitrogenada
+                matrizADN[self.fila_inicial] = ''.join(secuencia_ADN)
+        elif (self.orientacion_de_la_mutacion == "H") and (self.columna_inicial in [3,4,5]):
+            for i in range(self.columna_inicial,self.columna_inicial-4,-1): #iria del n° columna, de manera inversa, como el ultimo valor no lo cuenta llegaria hasta -1 (sin contarlo)
+                secuencia_ADN = list(matrizADN[self.fila_inicial])
+                secuencia_ADN[i] = base_nitrogenada
+                matrizADN[self.fila_inicial] = ''.join(secuencia_ADN)
+
+    def mutacion_vertical (self, base_nitrogenada,matrizADN):
+        if (self.orientacion_de_la_mutacion == "V") and (self.fila_inicial in [0,1,2]):
+            for i in range(self.fila_inicial, self.fila_inicial+4):
+                secuencia_ADN = list (matrizADN[i])
+                secuencia_ADN[self.columna_inicial] = base_nitrogenada
+                matrizADN[i] = ''.join(secuencia_ADN)
+
+        elif (self.orientacion_de_la_mutacion == "V") and (self.fila_inicial in [3,4,5]):
+            for i in range(self.fila_inicial, self.fila_inicial -4 , -1):
+                secuencia_ADN = list (matrizADN[i])
+                secuencia_ADN[self.columna_inicial] = base_nitrogenada
+                matrizADN[i] = ''.join(secuencia_ADN)
+
+class Virus (Mutador):
+    
+    def __init__(self, base_nitrogenada: str,atributo1,atributo2):
+        super().__init__(base_nitrogenada,atributo1,atributo2)
+
+    def crear_mutante(self,base_nitrogenada:str, posicion_inicial:list, matrizADN:list):
+        self.base_nitrogenada = base_nitrogenada.strip().upper()
+        self.fila_inicial, self.columna_inicial = posicion_inicial #De una lista, desglosa en 2 variables
+        
+        while True:
+            try:
+                #Comprobar si la posicion esta fuera del rango
+                if self.fila_inicial >= len(matrizADN) or self.columna_inicial >= len(matrizADN[0]):
+                    raise IndexError("La posicion elegida se encuentra fuera de la cadena de ADN")
+               #Verificar que tenga 2 elementos
+                elif len(posicion_inicial) != 2:
+                    raise ValueError("Para mutar se debe tener solo 2 numeros")
+                # Verificar la base nitrogenada
+                elif self.base_nitrogenada not in ["A","C","G","T"]:
+                    raise ValueError("Base nitrogenada no valida")
+
+                self.mutacion_diagonal(self.base_nitrogenada,matrizADN)
+
+                for fila in matrizADN:
+                    print(fila)
+
+                return matrizADN
+                
+            except (IndexError, ValueError) as e:
+                print("Intente nuevamente, error", e)
+                break
+        
+    def mutacion_diagonal (self, base_nitrogenada, matrizADN):
+        if (self.fila_inicial in [0,1,2]) and (self.columna_inicial in [0,1,2]): #Creo que se podria unir
+            for i in range(self.fila_inicial, self.fila_inicial +4):
+                secuencia_ADN = list(matrizADN[i])
+                secuencia_ADN[self.columna_inicial] = base_nitrogenada
+                matrizADN[i] = ''.join(secuencia_ADN)
+                self.columna_inicial += 1
+
+        elif (self.fila_inicial in [0,1,2]) and (self.columna_inicial in [3,4,5]): #Creo que se podria unir
+            for i in range(self.fila_inicial, self.fila_inicial +4):
+                secuencia_ADN = list(matrizADN[i])
+                secuencia_ADN[self.columna_inicial] = base_nitrogenada
+                matrizADN[i] = ''.join(secuencia_ADN)
+                self.columna_inicial -= 1
+
+        elif (self.fila_inicial in [3,4,5]) and (self.columna_inicial in [0,1,2]): #Creo que se podria unir
+            for i in range(self.fila_inicial, self.fila_inicial -4 , -1):
+                secuencia_ADN = list(matrizADN[i])
+                secuencia_ADN[self.columna_inicial] = base_nitrogenada
+                matrizADN[i] = ''.join(secuencia_ADN)
+                self.columna_inicial += 1
+
+        elif (self.fila_inicial in [3,4,5]) and (self.columna_inicial in [3,4,5]): #Creo que se podria unir
+            for i in range(self.fila_inicial, self.fila_inicial -4 , -1):
+                secuencia_ADN = list(matrizADN[i])
+                secuencia_ADN[self.columna_inicial] = base_nitrogenada
+                matrizADN[i] = ''.join(secuencia_ADN)
+                self.columna_inicial -= 1
+        
+
+class Sanador(Detector):#Lo hice como si fuera hija asi hereda el detector mutante (lo dijo el profe en una co)
+    def __init__(self,nombre:str, nombreMetodo:str):
+        super().__init__(nombre) #??
+        self.metodo_sanacion = nombreMetodo
+
+    def sanar_mutantes(self,matrizADN):
+        self.mutado = super().detector_mutantes(matrizADN) #Aca se fija si hay mutacion
+        print("Es mutado o no?", self.mutado) #Esto es para mi, porque no sabia si salia bien el codigo se puede borrar despues
+        bases_permitidas = ["C","T","A","G"]
+        while self.mutado == True:#Si hay genera una random, como las letras permitidas
+            matriz_sanada = [''.join(random.choice(bases_permitidas)for _ in range(6)) for _ in range(6)]
+            self.mutado = super().detector_mutantes(matriz_sanada) #Verifica si tiene mutacion
+            
+            if self.mutado == False:#Recien cuando no tenga la imprime
+                print(matriz_sanada)
+        return matriz_sanada
+
+matrizADN = ["TTTTCA", "TATTCA", "TAACAT", "TAGCTA", "ATTGCG", "CTGTTC"]
+mutador = Virus("C","HOla","CHAU")
+sanador = Sanador("B","B")
+sanador.sanar_mutantes(matrizADN)
+mutador.crear_mutante("t",[1,1],matrizADN)
