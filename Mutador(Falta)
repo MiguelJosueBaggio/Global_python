@@ -65,3 +65,61 @@ class Radiacion(Mutador):
                         secuencia_ADN = list (matrizADN[i])
                         secuencia_ADN[self.columna_inicial] = base_nitrogenada
                         matrizADN[i] = ''.join(secuencia_ADN)
+class Virus (Mutador):
+    atributo1 = ""
+    atributo2 = ""
+
+    def __init__(self, base_nitrogenada: str):
+        super().__init__(base_nitrogenada)
+
+    def crear_mutante(self,base_nitrogenada, posicion_inicial, matrizADN):
+        self.base_nitrogenada = base_nitrogenada.strip().upper()
+        self.fila_inicial, self.columna_inicial = posicion_inicial #De una lista, desglosa en 2 variables
+        
+        while True:
+            try:
+                #Comprobar si la posicion esta fuera del rango
+                if self.fila_inicial >= len(matrizADN) or self.columna_inicial >= len(matrizADN[0]):
+                    raise IndexError("La posicion elegida se encuentra fuera de la cadena de ADN")
+               #Verificar que tenga 2 elementos
+                elif len(posicion_inicial) != 2:
+                    raise ValueError("Para mutar se debe tener solo 2 numeros")
+                # Verificar la base nitrogenada
+                elif self.base_nitrogenada not in ["A","C","G","T"]:
+                    raise ValueError("Base nitrogenada no valida")
+
+                #Crear diagonal mutaciones
+                if (self.fila_inicial in [0,1,2]) and (self.columna_inicial in [0,1,2]): #Creo que se podria unir
+                    for i in range(self.fila_inicial, self.fila_inicial +4):
+                        secuencia_ADN = list(matrizADN[i])
+                        secuencia_ADN[self.columna_inicial] = base_nitrogenada
+                        matrizADN[i] = ''.join(secuencia_ADN)
+                        self.columna_inicial += 1
+
+                elif (self.fila_inicial in [0,1,2]) and (self.columna_inicial in [3,4,5]): #Creo que se podria unir
+                    for i in range(self.fila_inicial, self.fila_inicial +4):
+                        secuencia_ADN = list(matrizADN[i])
+                        secuencia_ADN[self.columna_inicial] = base_nitrogenada
+                        matrizADN[i] = ''.join(secuencia_ADN)
+                        self.columna_inicial -= 1
+
+                elif (self.fila_inicial in [3,4,5]) and (self.columna_inicial in [0,1,2]): #Creo que se podria unir
+                    for i in range(self.fila_inicial, self.fila_inicial -4 , -1):
+                        secuencia_ADN = list(matrizADN[i])
+                        secuencia_ADN[self.columna_inicial] = base_nitrogenada
+                        matrizADN[i] = ''.join(secuencia_ADN)
+                        self.columna_inicial += 1
+
+                elif (self.fila_inicial in [3,4,5]) and (self.columna_inicial in [3,4,5]): #Creo que se podria unir
+                    for i in range(self.fila_inicial, self.fila_inicial -4 , -1):
+                        secuencia_ADN = list(matrizADN[i])
+                        secuencia_ADN[self.columna_inicial] = base_nitrogenada
+                        matrizADN[i] = ''.join(secuencia_ADN)
+                        self.columna_inicial -= 1
+
+                for fila in matrizADN:
+                    print(fila)
+                break  # Salir del bucle si la mutación se realiza con éxito
+            except (IndexError, ValueError) as e:
+                print("Intente nuevamente, error", e)
+                break
