@@ -1,65 +1,53 @@
+import random
+from Clases import Detector, Radiacion, Virus, Sanador
 
+def obtener_matriz():
+    print("Ingresa la matriz de ADN (6 filas, 6 columnas):")
+    matriz = [input().strip().upper() for i in range(6)] #el metodo .strip remueve los espacios vacios al momento de ingresar la cadena 
+    return matriz
 
-class Detector:
-    def __init__(self,especie,variedad) :
-        self.especie=especie
-        self.variedad=variedad
-        
+def main():
+    matriz = obtener_matriz()
+    print("Selecciona una opción:")
+    print("1. Detectar mutaciones")
+    print("2. Crear mutación")
+    print("3. Sanar mutaciones")
+
     
+    opcion = input("Opción: ").strip()
 
-    def generador_de_codigo1(self): ##Generador de codgio genetico
-        
-        list_codigo = [] ##hacer lista
-        for i in range (0,6): #hacer una lista de 6 string de 6 letras
-         max_letras=6
-         while True: ##Se hace con while true para hacerlo de 6 letras
-          codigo = input ("ingrese 6 bases ")
-          codigo_min = codigo.lower() ##pasaje a minuscula
-          if len(codigo_min) == max_letras : ##valida para que tenga las letras pertinentes
-               list_codigo.append(codigo )
-          
-               break
-          
-          print("cadena incorrecto continue")
-           
-        return list_codigo
-    codigo_genetico = generador_de_codigo1
+    if opcion == "1":
+        detector = Detector("Detector de ADN")
+        if detector.detector_mutantes(matriz):
+            print("Mutaciones detectadas.")
+        else:
+            print("No se detectaron mutaciones.")
+    elif opcion == "2":
+        print("Selecciona tipo de mutación:")
+        print("1. Radiación (horizontal/vertical)")
+        print("2. Virus (diagonal)")
+        tipo = input("Tipo: ").strip()
+        base = input("Base nitrogenada (A/T/C/G): ").strip().upper()
+        fila = int(input("Fila inicial (0-5): ").strip())
+        col = int(input("Columna inicial (0-5): ").strip())
+        if tipo == "1":
+            orientacion = input("Orientación (H/V): ").strip().upper()
+            radiacion = Radiacion(base, "Mutación", "Alta")
+            nueva_matriz = radiacion.crear_mutante(base, [fila, col], orientacion, matriz)
+        elif tipo == "2":
+            virus = Virus(base, "Mutación", "Alta")
+            nueva_matriz = virus.crear_mutante(base, [fila, col], matriz)
+        print("Matriz mutada:")
+        for fila in nueva_matriz:
+            print(fila)
+    elif opcion == "3":
+        sanador = Sanador("Sanador de ADN", "Regeneración")
+        nueva_matriz = sanador.sanar_mutantes(matriz)
+        print("Matriz sanada:")
+        for fila in nueva_matriz:
+            print(fila)
+    else:
+        print("Opción no válida.")
 
-
-especie1 = Detector("Vitis_Vinifera","Malbec")
-
-codigo_genetico = especie1.generador_de_codigo1()
-
-
-for i in range(6):
-   print(codigo_genetico[i])
-   
-
-             
-             
-                
-
-          
-                     
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if __name__ == "__main__":
+    main()
