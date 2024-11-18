@@ -416,6 +416,7 @@ class Sanador(Detector):
         """
         super().__init__(nombre)
         self.metodo_sanacion = metodo_sanacion
+        self.mutado = False
 
     def sanar_mutantes(self,matrizADN:list)->list:
 
@@ -434,13 +435,18 @@ class Sanador(Detector):
         Retorna:
             matriz_sanada (list): Matriz de ADN generada aleatoriamente sin mutaciones.
         """
-        self.mutado = super().detector_mutantes(matrizADN) 
+        
+        self.mutado = super().detector_mutantes(matrizADN)
+        if not self.mutado:
+            print("La matriz ya esta sanada.")
+            
+            return matrizADN
+        
         bases_permitidas = ["C","T","A","G"]
-
+        
         while self.mutado == True:
             matriz_sanada = [''.join(random.choice(bases_permitidas)for _ in range(6)) for _ in range(6)]
             self.mutado = super().detector_mutantes(matriz_sanada) 
             
             if self.mutado == False:
-                print(matriz_sanada)
                 return matriz_sanada
